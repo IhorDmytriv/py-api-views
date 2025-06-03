@@ -80,34 +80,6 @@ class CinemaHallViewSet(
     serializer_class = CinemaHallSerializer
 
 
-class MovieList(APIView):
-    def get(self, request) -> Response:
-        movies = Movie.objects.all()
-        serializer = MovieSerializer(movies, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request) -> Response:
-        serializer = MovieSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-class MovieDetail(APIView):
-    def get_object(self, pk: int) -> Movie:
-        return get_object_or_404(Movie, pk=pk)
-
-    def get(self, request, pk: int) -> Response:
-        serializer = MovieSerializer(self.get_object(pk=pk))
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def put(self, request, pk: int) -> Response:
-        serializer = MovieSerializer(self.get_object(pk=pk), data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def delete(self, request, pk: int) -> Response:
-        movie = self.get_object(pk=pk)
-        movie.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class MovieViewSet(ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
